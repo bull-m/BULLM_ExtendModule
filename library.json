@@ -1,0 +1,23 @@
+{
+  "name": "BULLM_ExtendModule",
+  "version": "0.1.1",
+  "description": "Control some expansion boards of BULLM.",
+  "keywords": "BULLM_ExtendModule",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/bull-m/BULLM_ExtendModule.git"
+  },
+  "authors":
+  [
+    {
+      "name": "BULLM",
+      "email": "i@yyznm.cn",
+      "url": "https://bullm.cn/"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://bullm.cn/",
+  "frameworks": "*",
+  "platforms": "*"
+}
