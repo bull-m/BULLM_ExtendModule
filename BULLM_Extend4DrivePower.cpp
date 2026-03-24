@@ -24,6 +24,14 @@ bool BULLM_Extend4DrivePower::begin() {
     return pca9685->begin();
 }
 
+/*!
+ *  @brief  为整个芯片设置PWM频率，最高可达1.6 KHz
+ *  @param  freq 尝试匹配的浮点频率
+ */
+void BULLM_Extend4DrivePower::setPWMFreq(float freq) {
+    pca9685->setFreq(freq);
+}
+
 /**
  * 驱动指定电机
  * @param index 操作的电机,从0到3
@@ -82,10 +90,12 @@ bool BULLM_Extend4DrivePower::setSpeedHigh(uint8_t index, int value, bool isBrak
     }
     // 刹车需要保持启用状态
     bool enable = value != 0 || isBrake;
-    pca9685->setPwmHigh(L_EN, enable ? 4095 : 0);
-    pca9685->setPwmHigh(R_EN, enable ? 4095 : 0);
-    pca9685->setPwmHigh(L_PWM, value < 0 ? -value : 0);
-    return pca9685->setPwmHigh(R_PWM, value > 0 ? value : 0);
+    uint8_t success = 0;
+    success += pca9685->setPwmHigh(L_EN, enable ? 4095 : 0);
+    success += pca9685->setPwmHigh(R_EN, enable ? 4095 : 0);
+    success += pca9685->setPwmHigh(L_PWM, value < 0 ? -value : 0);
+    success += pca9685->setPwmHigh(R_PWM, value > 0 ? value : 0);
+    return success == 4;
 }
 
 /**
@@ -99,13 +109,10 @@ bool BULLM_Extend4DrivePower::brake(uint8_t index) {
 /**
  * 关闭所有电机
  */
-bool BULLM_Extend4DrivePower::closeAll() {
-    const uint8_t len = 4 * 16 + 1;
-    uint8_t buffer[len];
-    for (int i = 0; i < len; i++) {
-        buffer[i] = 0;
+bool BULLM_Extend4DrivePower::closeAll(bool isBrake) {
+    uint8_t success = 0;
+    for (int i = 0; i < 4; ++i) {
+        success += setSpeedHigh(i, 0, isBrake);
     }
-    buffer[0] = PCA9685_LED_START;
-    // 直接操作寄存器
-    return pca9685->i2cDevice->write(buffer, len);
+    return success == 4;
 }

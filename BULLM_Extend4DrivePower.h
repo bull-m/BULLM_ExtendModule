@@ -11,11 +11,12 @@ public:
     BULLM_Extend4DrivePower(uint8_t addr, TwoWire &i2c);
     ~BULLM_Extend4DrivePower();
     bool begin();
+    void setPWMFreq(float freq);
 
     bool setSpeed(uint8_t index, int value, bool isBrake = false);
     bool setSpeedHigh(uint8_t index, int value, bool isBrake = false);
     bool brake(uint8_t index);
-    bool closeAll();
+    bool closeAll(bool isBrake = false);
 private:
     BULLM_PCA9685 *pca9685 = nullptr;
     uint8_t address;
