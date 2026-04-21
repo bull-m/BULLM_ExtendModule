@@ -1,8 +1,8 @@
 
-#ifndef BULLM_EXPAND_BULLM_EXTEND8RELAY_H
-#define BULLM_EXPAND_BULLM_EXTEND8RELAY_H
-#include "src/BULLM_I2CDevice.h"
-#include "src/BULLM_PCA9555.h"
+#ifndef BULLM_EXTEND8RELAY_H
+#define BULLM_EXTEND8RELAY_H
+#include "utils/BULLM_I2CDevice.h"
+#include "utils/BULLM_PCA9555.h"
 
 #define EXTEND8RELAY_PIN_MODE_INPUT 0xff
 #define EXTEND8RELAY_PIN_MODE_OUTPUT 0
@@ -36,4 +36,4 @@ private:
 };
 
 
-#endif //BULLM_EXPAND_BULLM_EXTEND8RELAY_H
+#endif //BULLM_EXTEND8RELAY_H

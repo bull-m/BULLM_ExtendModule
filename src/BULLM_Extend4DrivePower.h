@@ -1,8 +1,8 @@
 
-#ifndef BULLM_EXPAND_BULLM_EXTEND4DRIVE_POWER_H
-#define BULLM_EXPAND_BULLM_EXTEND4DRIVE_POWER_H
-#include "src/BULLM_I2CDevice.h"
-#include "src/BULLM_PCA9685.h"
+#ifndef BULLM_EXTEND4DRIVE_POWER_H
+#define BULLM_EXTEND4DRIVE_POWER_H
+#include "utils/BULLM_I2CDevice.h"
+#include "utils/BULLM_PCA9685.h"
 
 class BULLM_Extend4DrivePower {
 public:
@@ -24,4 +24,4 @@ private:
 };
 
 
-#endif //BULLM_EXPAND_BULLM_EXTEND4DRIVE_POWER_H
+#endif //BULLM_EXTEND4DRIVE_POWER_H

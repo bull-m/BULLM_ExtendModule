@@ -1,5 +1,5 @@
-#ifndef BULLM_EXPAND_BULLM_PCA9555_H
-#define BULLM_EXPAND_BULLM_PCA9555_H
+#ifndef BULLM_PCA9555_H
+#define BULLM_PCA9555_H
 #include <Arduino.h>
 #include "BULLM_I2CDevice.h"
 // 寄存器地址
@@ -39,4 +39,4 @@ private:
 };
 
 
-#endif //BULLM_EXPAND_BULLM_PCA9555_H
+#endif //BULLM_PCA9555_H

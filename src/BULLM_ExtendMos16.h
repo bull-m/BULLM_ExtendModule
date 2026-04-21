@@ -1,8 +1,8 @@
 
-#ifndef BULLM_EXPAND_BULLM_EXTEND_MOS_16_H
-#define BULLM_EXPAND_BULLM_EXTEND_MOS_16_H
-#include "src/BULLM_I2CDevice.h"
-#include "src/BULLM_PCA9685.h"
+#ifndef BULLM_EXTEND_MOS_16_H
+#define BULLM_EXTEND_MOS_16_H
+#include "utils/BULLM_I2CDevice.h"
+#include "utils/BULLM_PCA9685.h"
 
 class BULLM_ExtendMos16 {
 public:
@@ -23,4 +23,4 @@ private:
 };
 
 
-#endif //BULLM_EXPAND_BULLM_EXTEND_MOS_16_H
+#endif //BULLM_EXTEND_MOS_16_H

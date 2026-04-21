@@ -1,5 +1,5 @@
-#ifndef BULLM_EXPAND_BULLM_PCA9685_H
-#define BULLM_EXPAND_BULLM_PCA9685_H
+#ifndef BULLM_PCA9685_H
+#define BULLM_PCA9685_H
 #include <Arduino.h>
 #include "BULLM_I2CDevice.h"
 
@@ -54,4 +54,4 @@ private:
 };
 
 
-#endif //BULLM_EXPAND_BULLM_PCA9685_H
+#endif //BULLM_PCA9685_H
