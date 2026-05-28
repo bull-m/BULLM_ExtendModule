@@ -4,18 +4,20 @@ int mapRange(int x, int in_min, int in_max, int out_min, int out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-BULLM_PCA9685::BULLM_PCA9685()
-        : i2caddr(0x27), i2c(&Wire) {}
+BULLM_PCA9685::BULLM_PCA9685() {
+    i2cDevice = new BULLM_I2CDevice(0x7f, Wire);
+}
 
-BULLM_PCA9685::BULLM_PCA9685(const uint8_t addr)
-        : i2caddr(addr), i2c(&Wire) {}
+BULLM_PCA9685::BULLM_PCA9685(const uint8_t addr) {
+    i2cDevice = new BULLM_I2CDevice(addr, Wire);
+}
 
-BULLM_PCA9685::BULLM_PCA9685(const uint8_t addr, TwoWire &i2c)
-        : i2caddr(addr), i2c(&i2c) {}
+BULLM_PCA9685::BULLM_PCA9685(const uint8_t addr, TwoWire &i2c) {
+    i2cDevice = new BULLM_I2CDevice(addr, i2c);
+}
 
 BULLM_PCA9685::~BULLM_PCA9685() {
-    if (i2cDevice)
-        delete i2cDevice;
+    delete i2cDevice;
     i2cDevice = nullptr;
 }
 
@@ -24,9 +26,6 @@ BULLM_PCA9685::~BULLM_PCA9685() {
  *  @return 如果成功则为true，否则为false
  */
 bool BULLM_PCA9685::begin() {
-    if (i2cDevice)
-        delete i2cDevice;
-    i2cDevice = new BULLM_I2CDevice(i2caddr, *i2c);
     if (!i2cDevice->begin()) return false;
     reset(); // 重新启动PCA9685
     setFreq(1000);
@@ -36,7 +35,7 @@ bool BULLM_PCA9685::begin() {
 // 在PCA9555读单个寄存器
 uint8_t BULLM_PCA9685::read(uint8_t reg) {
     uint8_t buffer[1] = {reg};
-    bool res = i2cDevice->write_then_read(buffer, 1, buffer, 1);
+    const bool res = i2cDevice->write_then_read(buffer, 1, buffer, 1);
     if (!res) {
         return 0;
     }
@@ -88,6 +87,7 @@ bool BULLM_PCA9685::setFreq(uint16_t freq) {
  *  @return 0 if successful, otherwise 1
  */
 bool BULLM_PCA9685::setPwm(uint8_t pin, uint16_t on, uint16_t off) {
+    if(pin >= 16) return false;
     uint8_t buffer[5];
     buffer[0] = PCA9685_LED_START + 4 * pin;
     buffer[1] = on;
@@ -101,20 +101,21 @@ bool BULLM_PCA9685::setPwm(uint8_t pin, uint16_t on, uint16_t off) {
 /**
  * 设置占空比 0 ~ 255
  * @param pin
- * @param duty_cycle 占空比
+ * @param val 占空比
  * @return
  */
 bool BULLM_PCA9685::setPwm(uint8_t pin, uint8_t val) {
-    return setPwmHigh(pin, val * 4095 / 255);
+    return setPwmRaw(pin, val * 4095.0 / 255.0);
 }
 
 /**
  * 设置占空比 0 ~ 4095
  * @param pin
- * @param duty_cycle 占空比
+ * @param val 占空比
  * @return
  */
-bool BULLM_PCA9685::setPwmHigh(uint8_t pin, uint16_t val) {
+bool BULLM_PCA9685::setPwmRaw(uint8_t pin, uint16_t val) {
+    if(pin >= 16) return false;
     // 范围0和4095之间
     if (val > 4095) {
         val = 4095;
@@ -126,4 +127,21 @@ bool BULLM_PCA9685::setPwmHigh(uint8_t pin, uint16_t val) {
     } else {
         return setPwm(pin, 0, val);
     }
+}
+
+bool BULLM_PCA9685::closeAllPwm() {
+    uint8_t buffer[17];
+    uint8_t yes = 0;
+    // 分4次更新
+    for (int i = 0; i < 4; i++) {
+        buffer[0] = PCA9685_LED_START + i * 4 * 4;
+        for (int j = 0; j < 4; ++j) {
+            buffer[1 + j * 4] = 0;
+            buffer[2 + j * 4] = 0;
+            buffer[3 + j * 4] = 255;
+            buffer[4 + j * 4] = 4096 >> 8;
+        }
+        yes += i2cDevice->write(buffer, 17);
+    }
+    return yes == 4;
 }

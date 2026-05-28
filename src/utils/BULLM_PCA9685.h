@@ -44,13 +44,11 @@ public:
     bool setFreq(uint16_t freq);
     // 设置PWM占空比
     bool setPwm(uint8_t pin, uint8_t duty_cycle);
-    bool setPwmHigh(uint8_t pin, uint16_t duty_cycle);
+    bool setPwmRaw(uint8_t pin, uint16_t duty_cycle);
     bool setPwm(uint8_t pin, uint16_t on, uint16_t off);
-    BULLM_I2CDevice *i2cDevice = nullptr;
-
+    bool closeAllPwm();
 private:
-    uint8_t i2caddr = 0;
-    TwoWire *i2c = nullptr;
+    BULLM_I2CDevice *i2cDevice;
 };
 
 

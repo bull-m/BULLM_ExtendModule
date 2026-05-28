@@ -33,9 +33,7 @@ public:
     bool setPolarity(uint8_t port, uint8_t reverses);
     bool setPolarityPin(uint8_t port, uint8_t pin, uint8_t reverse);
 private:
-    BULLM_I2CDevice *i2cDevice = nullptr;
-    uint8_t i2caddr = 0;
-    TwoWire *i2c = nullptr;
+    BULLM_I2CDevice *i2cDevice;
 };
 
 

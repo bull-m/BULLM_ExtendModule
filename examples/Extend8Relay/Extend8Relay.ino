@@ -24,42 +24,22 @@ void setup() {
 
 
 void loop_relay() {
-    extend.openAllRelay();
-    delay(200);
-    extend.closeAllRelay();
-    delay(200);
-    extend.openAllRelay();
-    delay(200);
-    extend.closeAllRelay();
-    delay(300);
+    for (int i = 0; i < 2; ++i) {
+        extend.openAllRelay();
+        delay(300);
+        extend.closeAllRelay();
+        delay(300);
+    }
 
     for (int i = 0; i < 2; ++i) {
-        extend.setRelay(0, true);
-        delay(70);
-        extend.setRelay(1, true);
-        extend.setRelay(0, false);
-        delay(70);
-        extend.setRelay(2, true);
-        extend.setRelay(1, false);
-        delay(70);
-        extend.setRelay(3, true);
-        extend.setRelay(2, false);
-        delay(70);
-        extend.setRelay(4, true);
-        extend.setRelay(3, false);
-        delay(70);
-        extend.setRelay(5, true);
-        extend.setRelay(4, false);
-        delay(70);
-        extend.setRelay(6, true);
-        extend.setRelay(5, false);
-        delay(70);
-        extend.setRelay(7, true);
-        extend.setRelay(6, false);
-        delay(70);
-        extend.setRelay(7, false);
-        delay(70);
+        for (int j = 0; j < 9; ++j) {
+            if (j < 8) extend.setRelay(j, true);
+            if (j > 0) extend.setRelay(j - 1, false);
+            delay(100);
+        }
     }
+
+    delay(150);
 }
 
 void loop() {

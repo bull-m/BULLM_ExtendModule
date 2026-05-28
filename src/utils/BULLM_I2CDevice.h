@@ -25,8 +25,8 @@ public:
 
     uint8_t address;
     bool begin(bool is_scan = true);
-    void end(void);
-    bool detection(void);
+    void end();
+    bool detection();
 
     bool read(uint8_t *buffer, size_t len, bool stop = true);
     bool write(const uint8_t *buffer, size_t len, bool stop = true);

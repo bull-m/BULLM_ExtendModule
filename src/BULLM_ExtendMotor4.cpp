@@ -1,16 +1,19 @@
-#include "BULLM_Extend4DrivePower.h"
+#include "BULLM_ExtendMotor4.h"
 
-BULLM_Extend4DrivePower::BULLM_Extend4DrivePower()
-        : address(0x7F), i2c(&Wire) {}
+BULLM_ExtendMotor4::BULLM_ExtendMotor4() {
+    pca9685 = new BULLM_PCA9685();
+}
 
-BULLM_Extend4DrivePower::BULLM_Extend4DrivePower(const uint8_t addr)
-        : address(addr), i2c(&Wire) {}
+BULLM_ExtendMotor4::BULLM_ExtendMotor4(const uint8_t addr) {
+    pca9685 = new BULLM_PCA9685(addr);
+}
 
-BULLM_Extend4DrivePower::BULLM_Extend4DrivePower(const uint8_t addr, TwoWire &i2c)
-        : address(addr), i2c(&i2c) {}
+BULLM_ExtendMotor4::BULLM_ExtendMotor4(const uint8_t addr, TwoWire &i2c) {
+    pca9685 = new BULLM_PCA9685(addr, i2c);
+}
 
-BULLM_Extend4DrivePower::~BULLM_Extend4DrivePower() {
-    if (pca9685) delete pca9685;
+BULLM_ExtendMotor4::~BULLM_ExtendMotor4() {
+    delete pca9685;
     pca9685 = nullptr;
 }
 
@@ -18,9 +21,8 @@ BULLM_Extend4DrivePower::~BULLM_Extend4DrivePower() {
  *  @brief  设置I2C接口和硬件
  *  @return 如果成功则为true，否则为false
  */
-bool BULLM_Extend4DrivePower::begin() {
-    if (pca9685) delete pca9685;
-    pca9685 = new BULLM_PCA9685(address, *i2c);
+bool BULLM_ExtendMotor4::begin() {
+    if (!pca9685) return false;
     return pca9685->begin();
 }
 
@@ -28,7 +30,7 @@ bool BULLM_Extend4DrivePower::begin() {
  *  @brief  为整个芯片设置PWM频率，最高可达1.6 KHz
  *  @param  freq 尝试匹配的浮点频率
  */
-void BULLM_Extend4DrivePower::setPWMFreq(float freq) {
+void BULLM_ExtendMotor4::setPwmFreq(float freq) {
     pca9685->setFreq(freq);
 }
 
@@ -38,7 +40,7 @@ void BULLM_Extend4DrivePower::setPWMFreq(float freq) {
  * @param value -255 ~ 255 负数反转，正数正转，0停止
  * @return
  */
-bool BULLM_Extend4DrivePower::setSpeed(uint8_t index, int value, bool isBrake) {
+bool BULLM_ExtendMotor4::setSpeed(uint8_t index, int value, bool isBrake) {
     return setSpeedHigh(index, value * 16.06, isBrake);
 }
 
@@ -47,7 +49,7 @@ bool BULLM_Extend4DrivePower::setSpeed(uint8_t index, int value, bool isBrake) {
  *  @param  index 操作的电机,从0到3
  *  @param  value -4096 ~ 4096 负数反转，正数正转，0停止
  */
-bool BULLM_Extend4DrivePower::setSpeedHigh(uint8_t index, int value, bool isBrake){
+bool BULLM_ExtendMotor4::setSpeedHigh(uint8_t index, int value, bool isBrake){
     if(index >= 4) return false;
     if(value < -4095) value = -4095;
     if(value > 4095) value = 4095;
@@ -91,10 +93,10 @@ bool BULLM_Extend4DrivePower::setSpeedHigh(uint8_t index, int value, bool isBrak
     // 刹车需要保持启用状态
     bool enable = value != 0 || isBrake;
     uint8_t success = 0;
-    success += pca9685->setPwmHigh(L_EN, enable ? 4095 : 0);
-    success += pca9685->setPwmHigh(R_EN, enable ? 4095 : 0);
-    success += pca9685->setPwmHigh(L_PWM, value < 0 ? -value : 0);
-    success += pca9685->setPwmHigh(R_PWM, value > 0 ? value : 0);
+    success += pca9685->setPwmRaw(L_EN, enable ? 4095 : 0);
+    success += pca9685->setPwmRaw(R_EN, enable ? 4095 : 0);
+    success += pca9685->setPwmRaw(L_PWM, value < 0 ? -value : 0);
+    success += pca9685->setPwmRaw(R_PWM, value > 0 ? value : 0);
     return success == 4;
 }
 
@@ -102,14 +104,14 @@ bool BULLM_Extend4DrivePower::setSpeedHigh(uint8_t index, int value, bool isBrak
  * 刹车
  * @param index 操作的电机,从0到3
  */
-bool BULLM_Extend4DrivePower::brake(uint8_t index) {
+bool BULLM_ExtendMotor4::brake(uint8_t index) {
     return setSpeedHigh(index, 0,  true);
 }
 
 /**
  * 关闭所有电机
  */
-bool BULLM_Extend4DrivePower::closeAll(bool isBrake) {
+bool BULLM_ExtendMotor4::closeAll(bool isBrake) {
     uint8_t success = 0;
     for (int i = 0; i < 4; ++i) {
         success += setSpeedHigh(i, 0, isBrake);

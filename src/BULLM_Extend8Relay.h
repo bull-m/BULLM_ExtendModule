@@ -1,6 +1,6 @@
 
-#ifndef BULLM_EXTEND8RELAY_H
-#define BULLM_EXTEND8RELAY_H
+#ifndef BULLM_EXTEND_8_RELAY_H
+#define BULLM_EXTEND_8_RELAY_H
 #include "utils/BULLM_I2CDevice.h"
 #include "utils/BULLM_PCA9555.h"
 
@@ -30,10 +30,8 @@ public:
     bool setOutputAll(uint8_t states);
 
 private:
-    BULLM_PCA9555 *pca9555 = nullptr;
-    uint8_t address;
-    TwoWire *i2c = nullptr;
+    BULLM_PCA9555 *pca9555;
 };
 
 
-#endif //BULLM_EXTEND8RELAY_H
+#endif //BULLM_EXTEND_8_RELAY_H

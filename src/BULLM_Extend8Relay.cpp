@@ -2,28 +2,29 @@
 
 #include "BULLM_Extend8Relay.h"
 
-BULLM_Extend8Relay::BULLM_Extend8Relay()
-        : address(0x24), i2c(&Wire) {}
+BULLM_Extend8Relay::BULLM_Extend8Relay() {
+    pca9555 = new BULLM_PCA9555();
+}
 
-BULLM_Extend8Relay::BULLM_Extend8Relay(const uint8_t addr)
-        : address(addr), i2c(&Wire) {}
+BULLM_Extend8Relay::BULLM_Extend8Relay(const uint8_t addr) {
+    pca9555 = new BULLM_PCA9555(addr);
+}
 
-BULLM_Extend8Relay::BULLM_Extend8Relay(const uint8_t addr, TwoWire &i2c)
-        : address(addr), i2c(&i2c) {}
+BULLM_Extend8Relay::BULLM_Extend8Relay(const uint8_t addr, TwoWire &i2c) {
+    pca9555 = new BULLM_PCA9555(addr, i2c);
+}
 
 BULLM_Extend8Relay::~BULLM_Extend8Relay() {
-    if (pca9555) delete pca9555;
+    delete pca9555;
     pca9555 = nullptr;
 }
+
 
 /*!
  *  @brief  设置I2C接口和硬件
  *  @return 如果成功则为true，否则为false
  */
 bool BULLM_Extend8Relay::begin() {
-    if (pca9555) delete pca9555;
-    pca9555 = new BULLM_PCA9555(address, *i2c);
-
     bool res = pca9555->begin();
     if (!res) return res;
     pca9555->setConfig(0, 0b00000000); // 端口0全为输出
