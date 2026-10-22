@@ -10,9 +10,7 @@ public:
     BULLM_ExtendPwm(uint8_t addr);
     BULLM_ExtendPwm(uint8_t addr, TwoWire &i2c);
     ~BULLM_ExtendPwm();
-
     bool begin();
-
     bool setPwmFreq(uint16_t freq);
     bool setPwm(uint8_t index, uint8_t value);
     bool setPwmRaw(uint8_t index, uint16_t value);
